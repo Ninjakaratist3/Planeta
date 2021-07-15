@@ -9,6 +9,8 @@ namespace Core.Models
 
         public IPAddress IP { get; set; }
 
+        public string Mask { get; set; }
+
         public DateTime StartOfService { get; set; }
 
         public DateTime EndOfService { get; set; }

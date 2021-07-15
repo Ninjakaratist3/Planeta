@@ -3,14 +3,20 @@ using System.Net;
 
 namespace Core.ViewModels.Subnet
 {
-    class SubnetViewModel
+    public class SubnetViewModel
     {
-        public IPAddress IP { get; set; }
+        public int Id { get; set; }
+
+        public string IP { get; set; }
+
+        public string Mask { get; set; }
 
         public DateTime StartOfService { get; set; }
 
         public DateTime EndOfService { get; set; }
 
         public int UserId { get; set; }
+
+        public Models.User User { get; set; }
     }
 }

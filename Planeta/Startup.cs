@@ -1,4 +1,7 @@
-using Core.Repositories;
+using Core.Repositories.Subnet;
+using Core.Repositories.User;
+using Core.Services.Subnet;
+using Core.Services.User;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +32,9 @@ namespace Planeta
 
             string connectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddTransient<IUserRepository, UserRepository>(provider => new UserRepository(connectionString));
+            services.AddTransient<ISubnetRepository, SubnetRepository>(provider => new SubnetRepository(connectionString));
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISubnetService, SubnetService>();
 
             services.InitializeDataBase(connectionString);
         }
@@ -50,7 +56,7 @@ namespace Planeta
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }
