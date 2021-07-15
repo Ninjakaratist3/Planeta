@@ -1,9 +1,7 @@
-﻿namespace Core.Models
+﻿namespace Core.ViewModels.User
 {
-    public class User
+    public class UserForm
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -13,7 +11,5 @@
         public int Age { get; set; }
 
         public string Gender { get; set; }
-
-        public int? SubnetId { get; set; }
     }
 }

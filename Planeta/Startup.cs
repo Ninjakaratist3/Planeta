@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Planeta.Extentions;
 
 namespace Planeta
 {
@@ -28,6 +29,8 @@ namespace Planeta
 
             string connectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddTransient<IUserRepository, UserRepository>(provider => new UserRepository(connectionString));
+
+            services.InitializeDataBase(connectionString);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

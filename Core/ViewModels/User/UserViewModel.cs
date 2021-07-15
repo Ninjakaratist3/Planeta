@@ -1,9 +1,9 @@
-﻿namespace Core.Models
-{
-    public class User
-    {
-        public int Id { get; set; }
+﻿using System.Net;
 
+namespace Core.ViewModels.User
+{
+    public class UserViewModel
+    {
         public string FirstName { get; set; }
 
         public string MiddleName { get; set; }
@@ -14,6 +14,6 @@
 
         public string Gender { get; set; }
 
-        public int? SubnetId { get; set; }
+        public IPAddress SubnetIP { get; set; }
     }
 }
