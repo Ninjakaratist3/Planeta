@@ -10,12 +10,8 @@ namespace Planeta.Extentions
 {
     public static class DataBaseExtentions
     {
-        private static IUserRepository _userRepository;
-
         public static void InitializeDataBase(this IServiceCollection services, string connectionString)
         {
-            _userRepository = new UserRepository(connectionString);
-
             string sqlCreateTablesCommand = @"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
                                                 WHERE TABLE_NAME = 'Users'))
                                                 BEGIN 
@@ -30,13 +26,13 @@ namespace Planeta.Extentions
                                                         [Surname]      NVARCHAR(50) NULL,
                                                         [Age]          INT NULL,
                                                         [Gender]       NVARCHAR(10) NULL,
-                                                        [SubnetId]     INT,
+                                                        [SubnetId]     INT NULL,
                                                         PRIMARY KEY (Id)
                                                     );
                                                     INSERT INTO Users (FirstName, MiddleName, Surname, Age, Gender)
-                                                    VALUES (N'Иван', N'Иванович', N'Иванов', N'19', N'Мужчина'), 
-                                                           (N'Петр', N'Петрович', N'Петров', N'21', N'Мужчина'),
-                                                           (N'Елена', N'Владимировна', N'Иванова', N'19', N'Женщина');
+                                                    VALUES (N'Иван', N'Иванович', N'Иванов', 19, N'Мужчина'), 
+                                                           (N'Петр', N'Петрович', N'Петров', 21, N'Мужчина'),
+                                                           (N'Елена', N'Владимировна', N'Иванова', 20, N'Женщина');
                                                 END;";
             sqlCreateTablesCommand += @"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
                                                 WHERE TABLE_NAME = 'Subnets'))
@@ -47,8 +43,8 @@ namespace Planeta.Extentions
                                                 BEGIN
                                                     CREATE TABLE [Subnets] (
                                                         [Id]               INT IDENTITY (1, 1) NOT NULL,
-                                                        [IP]               NVARCHAR(32),
-                                                        [Mask]             NVARCHAR(32),
+                                                        [IP]               NVARCHAR(15),
+                                                        [Mask]             NVARCHAR(15),
                                                         [StartOfService]   DATETIME NULL,
                                                         [EndOfService]     DATETIME NULL,
                                                         [UserId]           INT,
@@ -56,10 +52,10 @@ namespace Planeta.Extentions
                                                     );
                                                     ALTER TABLE [Users] ADD FOREIGN KEY(SubnetId) REFERENCES Subnets(Id);
 
-                                                    INSERT INTO Users(FirstName, MiddleName, Surname, Age, Gender)
-                                                    VALUES (N'255.', N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 1), 
-                                                           (N'255.', N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 1)
-                                                           (N'255.', N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 1);
+                                                    INSERT INTO Subnets(IP, Mask, StartOfService, EndOfService, UserId)
+                                                    VALUES (N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 1), 
+                                                           (N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 2),
+                                                           (N'192.168.11.10', N'255.255.248.0', N'07.07.2003 12:00:00', N'07.07.2003 12:00:00', 3);
                                                 END";
 
             using (IDbConnection dataBaseConnection = new SqlConnection(connectionString))

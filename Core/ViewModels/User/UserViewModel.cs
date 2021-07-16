@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using Core.ViewModels.Subnet;
 
 namespace Core.ViewModels.User
 {
@@ -16,6 +16,6 @@ namespace Core.ViewModels.User
 
         public string Gender { get; set; }
 
-        public IPAddress SubnetIP { get; set; }
+        public SubnetViewModel Subnet { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace Core.Repositories.Subnet
                                             StartOfService = @StartOfService, 
                                             EndOfService = @EndOfService, 
                                             UserId = @UserId
-                                        WHERE Id = @Id";
+                                        WHERE UserId = @UserId";
             var subnet = ConvertSubnetToSubnetViewModel(model);
 
             using (IDbConnection dataBaseConnection = new SqlConnection(_connectionString))
