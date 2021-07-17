@@ -10,9 +10,9 @@ namespace Core.ViewModels.Subnet
         [Required]
         public string IP { get; set; }
 
-        public DateTime StartOfService { get; set; }
+        public DateTime StartOfService { get; set; } = DateTime.Now;
 
-        public DateTime EndOfService { get; set; }
+        public DateTime EndOfService { get; set; } = DateTime.MaxValue;
 
         [Required]
         public int UserId { get; set; }

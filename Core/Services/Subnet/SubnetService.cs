@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Core.Services.Subnet
 {
@@ -33,7 +34,7 @@ namespace Core.Services.Subnet
 
         public void Create(SubnetForm model)
         {
-            if (!SubnetFormIsValid(model))
+            if (!SubnetFormIsValid(model) || Get(model.UserId) != null)
             {
                 throw new ArgumentException();
             }
@@ -69,6 +70,7 @@ namespace Core.Services.Subnet
         {
             var IPWithMask = model.IP.Split('/');
             model.IP = IPWithMask[0];
+
             var subnetForm = new Models.Subnet()
             {
                 Id = model.Id,
@@ -86,6 +88,7 @@ namespace Core.Services.Subnet
         {
             var binaryMask = new StringBuilder();
             int decimalMask = Convert.ToInt32(mask);
+
             for (int i = 1; i <= 32; i++)
             {
                 if (decimalMask >= i)
@@ -106,16 +109,16 @@ namespace Core.Services.Subnet
             return string.Join('.', binaryMask.ToString().Split(".").Select(x => FromBinary(x)).ToList());
         }
 
-        private long FromBinary(string input)
+        private int FromBinary(string binaryNumber)
         {
-            long big = 0;
-            foreach (var c in input)
+            int number = 0;
+            foreach (var symbol in binaryNumber)
             {
-                big <<= 1;
-                big += c - '0';
+                number <<= 1;
+                number += symbol - '0';
             }
 
-            return big;
+            return number;
         }
 
         public SubnetViewModel ConvertSubnetToSubnetViewModel(Models.Subnet model)
@@ -136,9 +139,13 @@ namespace Core.Services.Subnet
 
         private bool SubnetFormIsValid(SubnetForm model)
         {
-            // TODO: IP Validation
+            Regex ipRegex = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}");
+            if (!ipRegex.IsMatch(model.IP))
+            {
+                return false;
+            }
 
-            if (model.StartOfService >= model.EndOfService)
+            if (model?.StartOfService >= model?.EndOfService)
             {
                 return false;
             }
