@@ -34,7 +34,7 @@ namespace Core.Services.Subnet
 
         public void Create(SubnetForm model)
         {
-            if (!SubnetFormIsValid(model) || Get(model.UserId) != null)
+            if (!SubnetFormIsValid(model))
             {
                 throw new ArgumentException();
             }
@@ -69,19 +69,51 @@ namespace Core.Services.Subnet
         public Models.Subnet ConvertSubnetFormToSubnet(SubnetForm model)
         {
             var IPWithMask = model.IP.Split('/');
-            model.IP = IPWithMask[0];
 
-            var subnetForm = new Models.Subnet()
+            var subnet = new Models.Subnet();
+            subnet.Id = model.Id;
+            subnet.IP = IPAddress.Parse(IPWithMask[0]);
+            subnet.Mask = GetMask(IPWithMask[1]);
+            subnet.StartOfService = model.StartOfService;
+            subnet.EndOfService = model.EndOfService;
+            subnet.UserId = model.UserId;
+
+            return subnet;
+        }
+
+        public SubnetViewModel ConvertSubnetToSubnetViewModel(Models.Subnet model)
+        {
+            var subnetViewModel = new SubnetViewModel();
+            subnetViewModel.Id = model.Id;
+            subnetViewModel.IP = model.IP.ToString();
+            subnetViewModel.Mask = model.Mask;
+            subnetViewModel.StartOfService = model.StartOfService;
+            subnetViewModel.EndOfService = model.EndOfService;
+            subnetViewModel.UserId = model.UserId;
+            subnetViewModel.User = _userRepository.Get(model.UserId);
+
+            return subnetViewModel;
+        }
+
+        private bool SubnetFormIsValid(SubnetForm model)
+        {
+            Regex ipRegex = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}");
+            if (!ipRegex.IsMatch(model.IP))
             {
-                Id = model.Id,
-                IP = IPAddress.Parse(model.IP),
-                Mask = GetMask(IPWithMask[1]),
-                StartOfService = model.StartOfService,
-                EndOfService = model.EndOfService,
-                UserId = model.UserId
-            };
+                return false;
+            }
 
-            return subnetForm;
+            if (model?.StartOfService >= model?.EndOfService)
+            {
+                return false;
+            }
+
+            if (_userRepository.Get(model.UserId) == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private string GetMask(string mask)
@@ -119,38 +151,6 @@ namespace Core.Services.Subnet
             }
 
             return number;
-        }
-
-        public SubnetViewModel ConvertSubnetToSubnetViewModel(Models.Subnet model)
-        {
-            var subnetForm = new SubnetViewModel()
-            {
-                Id = model.Id,
-                IP = model.IP.ToString(),
-                Mask = model.Mask,
-                StartOfService = model.StartOfService,
-                EndOfService = model.EndOfService,
-                UserId = model.UserId,
-                User = _userRepository.Get(model.UserId)
-            };
-
-            return subnetForm;
-        }
-
-        private bool SubnetFormIsValid(SubnetForm model)
-        {
-            Regex ipRegex = new Regex(@"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}");
-            if (!ipRegex.IsMatch(model.IP))
-            {
-                return false;
-            }
-
-            if (model?.StartOfService >= model?.EndOfService)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

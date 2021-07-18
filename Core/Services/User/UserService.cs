@@ -64,38 +64,50 @@ namespace Core.Services.User
 
         public Models.User ConvertUserFormToUser(UserForm model)
         {
-            var userForm = new Models.User()
-            {
-                Id = model.Id,
-                FirstName = model.FirstName,
-                MiddleName = model.MiddleName,
-                Surname = model.Surname,
-                Age = model.Age,
-                Gender = model.Gender
-            };
-
-            return userForm;
-        }
-
-        public UserViewModel ConvertUserToUserViewModel(Models.User model)
-        {
-            var user = new UserViewModel()
-            {
-                Id = model.Id,
-                FirstName = model.FirstName,
-                MiddleName = model.MiddleName,
-                Surname = model.Surname,
-                Age = model.Age,
-                Gender = model.Gender,
-                Subnet = _subnetService.Get(model.Id)
-            };
+            var user = new Models.User();
+            user.Id = model.Id;
+            user.FirstName = model.FirstName;
+            user.MiddleName = model.MiddleName;
+            user.Surname = model.Surname;
+            user.Age = model.Age;
+            user.Gender = model.Gender;
 
             return user;
         }
 
+        public UserViewModel ConvertUserToUserViewModel(Models.User model)
+        {
+            var userViewModel = new UserViewModel();
+            userViewModel.Id = model.Id;
+            userViewModel.FirstName = model.FirstName;
+            userViewModel.MiddleName = model.MiddleName;
+            userViewModel.Surname = model.Surname;
+            userViewModel.Age = model.Age;
+            userViewModel.Gender = model.Gender;
+            try
+            {
+                userViewModel.Subnet = _subnetService.Get(model.Id);
+            }
+            catch
+            {
+                userViewModel.Subnet = null;
+            }
+            
+
+            return userViewModel;
+        }
+
         private bool UserFormIsValid(UserForm model)
         {
-            // TODO: UserForm validation
+            if (string.IsNullOrEmpty(model.FirstName) || string.IsNullOrEmpty(model.Surname))
+            {
+                return false;
+            }
+
+            if (model.Age < 0)
+            {
+                return false;
+            }
 
             return true;
         }

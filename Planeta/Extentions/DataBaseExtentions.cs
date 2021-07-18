@@ -22,7 +22,7 @@ namespace Planeta.Extentions
                                                 BEGIN 
                                                     RETURN 
                                                 END
-                                             ELSE 
+                                              ELSE 
                                                 BEGIN
                                                     CREATE TABLE [Users] (
                                                         [Id]           INT IDENTITY (1, 1) NOT NULL,
@@ -39,7 +39,7 @@ namespace Planeta.Extentions
                                                            (N'Петр', N'Петрович', N'Петров', 21, N'Мужчина'),
                                                            (N'Елена', N'Владимировна', N'Иванова', 20, N'Женщина');
                                                 END;";
-            sqlCreateTablesCommand += @"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+            sqlCreateTablesCommand +=      @"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
                                                 WHERE TABLE_NAME = 'Subnets'))
                                                 BEGIN 
                                                     RETURN 

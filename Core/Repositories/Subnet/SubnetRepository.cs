@@ -24,8 +24,8 @@ namespace Core.Repositories.Subnet
 
             using (IDbConnection dataBaseConnection = new SqlConnection(_connectionString))
             {
-                subnet = dataBaseConnection.Query<Models.Subnet>(sqlGetCommand, new { userId }).FirstOrDefault();
-                IP = dataBaseConnection.Query<string>("SELECT IP FROM Subnets WHERE UserId = @userId", new { userId }).FirstOrDefault();
+                subnet = dataBaseConnection.Query<Models.Subnet>(sqlGetCommand, new { userId }).LastOrDefault();
+                IP = dataBaseConnection.Query<string>("SELECT IP FROM Subnets WHERE UserId = @userId", new { userId }).LastOrDefault();
             }
 
             if (IP != null)
@@ -49,7 +49,7 @@ namespace Core.Repositories.Subnet
 
             using (IDbConnection dataBaseConnection = new SqlConnection(_connectionString))
             {
-                int? subnetId = dataBaseConnection.Query<int>(sqlAddCommand, subnet).FirstOrDefault();
+                int? subnetId = dataBaseConnection.Query<int>(sqlAddCommand, subnet).LastOrDefault();
                 dataBaseConnection.Execute(sqlUpdateCommand, new { UserId = model.UserId, SubnetId = subnetId.Value });
             }
         }
@@ -60,9 +60,9 @@ namespace Core.Repositories.Subnet
                                         SET IP = @IP, 
                                             Mask = @Mask,
                                             StartOfService = @StartOfService, 
-                                            EndOfService = @EndOfService, 
-                                            UserId = @UserId
+                                            EndOfService = @EndOfService
                                         WHERE UserId = @UserId";
+
             var subnet = ConvertSubnetToSubnetViewModel(model);
 
             using (IDbConnection dataBaseConnection = new SqlConnection(_connectionString))
@@ -95,8 +95,8 @@ namespace Core.Repositories.Subnet
 
             using (IDbConnection dataBaseConnection = new SqlConnection(_connectionString))
             {
-                dataBaseConnection.Execute(sqlDeleteCommand, new { userId });
                 dataBaseConnection.Execute(sqlDeleteSubnetFromUserCommand, new { userId });
+                dataBaseConnection.Execute(sqlDeleteCommand, new { userId });
             }
         }
     }
